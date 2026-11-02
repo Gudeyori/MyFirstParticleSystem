@@ -15,7 +15,7 @@ void ParticleSystem::Main()
 {
 	Start();
 
-	InitWindow(500, 500, "My Neato-Burrito Game");
+	InitWindow(500, 500, "My First Particle System");
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose())
