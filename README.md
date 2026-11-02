@@ -2,6 +2,8 @@ My First Particle System 🌈🔥
 
 A simple interactive particle system that creates a colorful, fire-like visual effect using mouse input.
 
+<img width="496" height="482" alt="ParticleBoi" src="https://github.com/user-attachments/assets/00a31086-fc07-44a9-8964-0f694ccfbd0e" />
+
 About the Project
 
 This project is an introduction to particle systems, demonstrating how particles can be generated, animated, and displayed in response to user interaction.
