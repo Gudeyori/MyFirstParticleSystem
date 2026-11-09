@@ -84,7 +84,6 @@ This project explores fundamental concepts of particle systems and interactive g
 
 ## Technologies
 
-- C#
 - Visual Studio
 - Particle System Programming
 
