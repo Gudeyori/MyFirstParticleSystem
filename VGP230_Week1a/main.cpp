@@ -1,13 +1,13 @@
 //#include "ParticleSystem.h"
-#include "Memory.h"
+#include "Snake.h"
 
 int main()
 {
 	//ParticleSystem system;
 	//system.Main();
 
-	Memory memory;
-	memory.Main();
+	Snake snake;
+	snake.Main();
 
 	return 0;
 }

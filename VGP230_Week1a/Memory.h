@@ -12,7 +12,7 @@ public:
 
 	std::vector<MemoryTile> tiles;
 
-	int gridSize = 6;
+	int gridSize = 4;
 	int widthHeight = 1200;
 
 	MemoryTile* tile1 = nullptr;

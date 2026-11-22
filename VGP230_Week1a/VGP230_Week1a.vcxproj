@@ -156,6 +156,8 @@
     <ClCompile Include="MemoryTile.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="Snake.cpp" />
+    <ClCompile Include="Template.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="examples.h" />
@@ -163,6 +165,8 @@
     <ClInclude Include="MemoryTile.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="Snake.h" />
+    <ClInclude Include="Template.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
