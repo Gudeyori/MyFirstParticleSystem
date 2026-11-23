@@ -1,7 +1,7 @@
 #include "MemoryTile.h"
 #include <string>
 
-void MemoryTile::Draw()
+void MemoryTile::Draw(const std::vector<Texture2D>& images, bool imageMode)
 {
 	int txtHeight = 40;
 	std::string txt = "?";
@@ -9,6 +9,18 @@ void MemoryTile::Draw()
 	int txtWidth = MeasureText(txt.c_str(), txtHeight);
 	int txtX = rect.x + rect.width / 2 - (float)txtWidth / 2;
 	int txtY = rect.y + rect.height / 2 - (float)txtHeight / 2;
+
+	if (imageMode && status != HIDDEN)
+	{
+		DrawRectangleRounded(rect, 0.25, 12, status == MATCHED ? DARKPURPLE : WHITE);
+
+		DrawTexturePro(
+			images[number - 1],
+			Rectangle(0, 0, images[number - 1].width, images[number - 1].height),
+			rect, Vector2{ 0, 0 }, 0.0f, WHITE);
+
+		return;
+	}
 
 	switch (status)
 	{

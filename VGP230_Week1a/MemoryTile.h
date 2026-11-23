@@ -1,5 +1,6 @@
 #pragma once
 #include <raylib.h>
+#include <vector>
 
 enum MemoryTileStatus
 {
@@ -20,5 +21,5 @@ public:
 	// c = column, r = row,
 	MemoryTile(float x, float y, float size, int num);
 
-	void Draw();
+	void Draw(const std::vector<Texture2D>& images, bool imageMode);
 };

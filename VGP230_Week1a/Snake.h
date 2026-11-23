@@ -86,6 +86,7 @@ public:
 	int frameCount = 0;
 
 	Piece fruit;
+	int fruitCount = 0;
 
 	void Main(); // the raylib stuff
 	void Start(); // where starting stuff goes

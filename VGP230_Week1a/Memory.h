@@ -8,9 +8,10 @@ class Memory
 public:
 
 #define GAP 12 // whatever number i want
-#define WAIT_TIME 0.5
+#define WAIT_TIME 0.75
 
 	std::vector<MemoryTile> tiles;
+	std::vector<Texture2D> images;
 
 	int gridSize = 4;
 	int widthHeight = 1200;
@@ -19,9 +20,11 @@ public:
 	MemoryTile* tile2 = nullptr;
 
 	bool compareMode = false;
+	bool imageMode = true;
 	float timeOfSecondClick = -1; // this is when the second click landed
 
 	void Main();
 	void Start();
 	void Update();
+	void Restart();
 };

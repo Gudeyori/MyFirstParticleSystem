@@ -1,13 +1,25 @@
 #include "Memory.h"
 #include <raylib.h>
 #include <algorithm>
-
+#include <iostream>
+#include <string>
 
 void Memory::Main()
 {
+
 	Start();
 	InitWindow(widthHeight, widthHeight, "Memory");
 	SetTargetFPS(60);
+
+	Texture2D texture;
+	int numberOfPictures = 32;
+
+	for (int i = 0; i < numberOfPictures; i++)
+	{
+		std::string textureName = "resources/" + std::to_string(i) + ".png";
+		texture = LoadTexture(textureName.c_str());
+		images.push_back(texture);
+	}
 
 	while (!WindowShouldClose())
 	{
@@ -16,6 +28,13 @@ void Memory::Main()
 		Update();
 		EndDrawing();
 	}
+
+	// unload images to prevent memory leaks! :D
+	for (Texture2D& texture : images)
+	{
+		UnloadTexture(texture);
+	}
+
 	CloseWindow();
 }
 
@@ -28,6 +47,7 @@ void Memory::Start()
 	int size = widthForTiles / gridSize;
 
 	std::vector<int> numbers;
+
 	for (int i = 0; i < gridSize * gridSize / 2; i++)
 	{
 		numbers.push_back(i + 1);
@@ -57,6 +77,38 @@ void Memory::Start()
 
 void Memory::Update()
 {
+
+	if (IsKeyPressed(KEY_I))
+	{
+		// imageMode is true -> make false
+		imageMode = !imageMode;
+	}
+
+	if (IsKeyPressed(KEY_R))
+	{
+		Restart();
+	}
+
+	// make grid larger (up to 8x8)
+	if (IsKeyPressed(KEY_UP))
+	{
+		if (gridSize < 8)
+		{
+			gridSize += 2;
+			Restart();
+		}
+	}
+
+	// make grid smaller (down to 2x2)
+	if (IsKeyPressed(KEY_DOWN))
+	{
+		if (gridSize > 2)
+		{
+			gridSize -= 2;
+			Restart();
+		}
+	}
+
 	if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && !compareMode)
 	{
 		for (int i = 0; i < tiles.size(); i++)
@@ -105,6 +157,19 @@ void Memory::Update()
 
 	for (MemoryTile tile : tiles)
 	{
-		tile.Draw();
+		tile.Draw(images, imageMode);
 	}
+}
+
+void Memory::Restart()
+{
+	tile1 = nullptr;
+	tile2 = nullptr;
+
+	compareMode = false;
+	timeOfSecondClick = -1;
+
+	tiles.clear();
+
+	Start();
 }

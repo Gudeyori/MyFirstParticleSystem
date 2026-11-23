@@ -90,8 +90,18 @@ void Snake::Update()
 		// move the head
 		player[0].position += speed;
 
+		if (fruitCount > 0 && (fruitCount + 1) % 10 == 0)
+		{
+			fruit.color = RED;
+		}
+		else
+		{
+			fruit.color = YELLOW;
+		}
+		
 		if (player[0].position == fruit.position) // ran into a fruit
 		{
+			fruitCount++;
 			Piece tail;
 			tail.color = PURPLE;
 			tail.position = player[player.size() - 1].position;
