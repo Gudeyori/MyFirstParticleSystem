@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <tuple>
+#include <string>
 
 class Snake
 {
@@ -71,9 +72,9 @@ public:
 
 	struct Piece
 	{
-		Vector2 position; // top left
+		Vector2 position = Vector2{ 0, 0}; // top left
 		Vector2 size = Vector2{ TILE_SIZE, TILE_SIZE };
-		Color color;
+		Color color = WHITE;
 
 		void Draw()
 		{
@@ -91,4 +92,14 @@ public:
 	void Main(); // the raylib stuff
 	void Start(); // where starting stuff goes
 	void Update(); // frame by frame calculation
+
+	void SpawnFruit();
+
+	void DisplayScreenText(std::string text1, std::string text2);
+	void Pause();
+	void GameOver();
+	void Restart();
+
+	bool isPaused = false;
+	bool gameOver = false;
 };

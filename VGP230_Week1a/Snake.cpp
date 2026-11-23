@@ -8,9 +8,34 @@ void Snake::Main()
 
 	while (!WindowShouldClose())
 	{
+
+		if (!gameOver && IsKeyPressed(KEY_P))
+		{
+			isPaused = !isPaused;
+		}
+
+		// gameOver && 
+		if (IsKeyPressed(KEY_R))
+		{
+			Restart();
+		}
+
 		BeginDrawing();
 		ClearBackground(BLACK);
-		Update();
+
+		if (gameOver)
+		{
+			GameOver();
+		}
+		else if (isPaused)
+		{
+			Pause();
+		}
+		else
+		{
+			Update();
+		}
+
 		EndDrawing();
 	}
 	CloseWindow();
@@ -43,14 +68,14 @@ void Snake::Start()
 	// Player
 	Piece head;
 	head.color = DARKPURPLE;
-	
+
 	Vector2 randomPosition = IndexToScreen(true);
 
 	head.position = randomPosition;
 	player.push_back(head);
 
 	fruit.color = YELLOW;
-	fruit.position = IndexToScreen(true); // if shouldnt be where the head or any pieces are
+	SpawnFruit();
 }
 
 void Snake::Update()
@@ -90,6 +115,20 @@ void Snake::Update()
 		// move the head
 		player[0].position += speed;
 
+		// check if the head hits its own body
+		// i starts at 1 because head is index 0!
+		for (int i = 1; i < player.size(); i++)
+		{
+			if (player[0].position.x == player[i].position.x &&
+				player[0].position.y == player[i].position.y)
+			{
+				gameOver = true;
+
+				// dont need to keep checking pieces if game is already over
+				break;
+			}
+		}
+
 		if (fruitCount > 0 && (fruitCount + 1) % 10 == 0)
 		{
 			fruit.color = RED;
@@ -98,7 +137,7 @@ void Snake::Update()
 		{
 			fruit.color = YELLOW;
 		}
-		
+
 		if (player[0].position == fruit.position) // ran into a fruit
 		{
 			fruitCount++;
@@ -106,10 +145,10 @@ void Snake::Update()
 			tail.color = PURPLE;
 			tail.position = player[player.size() - 1].position;
 			player.push_back(tail);
-			fruit.position = IndexToScreen(true);
+			SpawnFruit();
 		}
 	}
-	
+
 	for (Piece p : player)
 	{
 		p.Draw();
@@ -121,4 +160,81 @@ void Snake::Update()
 	{
 		l.Draw();
 	}
+}
+
+void Snake::SpawnFruit()
+{
+	bool isOverlapping;
+
+	do
+	{
+		isOverlapping = false;
+		fruit.position = IndexToScreen(true);
+
+		for (int i = 0; i < player.size(); i++)
+		{
+			if (fruit.position.x == player[i].position.x &&
+				fruit.position.y == player[i].position.y)
+			{
+				isOverlapping = true;
+				break;
+			}
+		}
+
+	} while (isOverlapping);
+}
+
+void Snake::DisplayScreenText(std::string text1, std::string text2)
+{
+	std::string text = text1;
+	std::string subText = text2;
+
+	int fontSize = 76;
+	int subFontSize = fontSize / 2;
+
+	int textWidth = MeasureText(text.c_str(), fontSize);
+	int halfTextWidth = textWidth / 2;
+
+	int subTextWidth = MeasureText(subText.c_str(), subFontSize);
+	int halfSubTextWidth = subTextWidth / 2;
+
+	int halfWidth = screenWidth / 2;
+	int halfHeight = screenHeight / 2;
+	int halfFontSize = fontSize / 2;
+
+	int padding = halfFontSize + 20;
+
+	DrawText(text.c_str(), halfWidth - halfTextWidth, halfHeight - halfFontSize, fontSize, WHITE);
+	DrawText(subText.c_str(), halfWidth - halfSubTextWidth, halfHeight + padding, subFontSize, GRAY);
+}
+
+void Snake::Pause()
+{
+	DisplayScreenText("PAUSE!", "PRESS 'P' TO CONTINUE");
+}
+
+void Snake::GameOver()
+{
+	DisplayScreenText("GAME OVER!", "PRESS 'R' TO RESTART");
+}
+
+void Snake::Restart()
+{
+	player.clear();
+
+	Piece head;
+	head.color = DARKPURPLE;
+	head.position = IndexToScreen(true);
+
+	player.push_back(head);
+
+	frameCount = 0;
+	fruitCount = 0;
+
+	SpawnFruit();
+
+	speed = Vector2{ 0, TILE_SIZE };
+
+	isPaused = false;
+	gameOver = false;
 }
