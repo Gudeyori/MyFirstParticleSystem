@@ -81,25 +81,90 @@ void Snake::Start()
 void Snake::Update()
 {
 	frameCount++;
-
-	if (IsKeyPressed(KEY_DOWN) && speed.y == 0)
+	
+	if (movementOverride == true)
 	{
-		speed = Vector2{ 0, TILE_SIZE };
+		if (GetTime() - movementOverrideStartTime >= 10.0)
+		{
+			movementOverride = false;
+		}
 	}
 
-	if (IsKeyPressed(KEY_UP) && speed.y == 0)
+	if (movementOverride == false)
 	{
-		speed = Vector2{ 0, -TILE_SIZE };
+		if (IsKeyPressed(KEY_DOWN) && speed.y == 0)
+		{
+			speed = Vector2{ 0, TILE_SIZE };
+		}
+
+		if (IsKeyPressed(KEY_UP) && speed.y == 0)
+		{
+			speed = Vector2{ 0, -TILE_SIZE };
+		}
+
+		if (IsKeyPressed(KEY_RIGHT) && speed.x == 0)
+		{
+			speed = Vector2{ TILE_SIZE, 0 };
+		}
+
+		if (IsKeyPressed(KEY_LEFT) && speed.x == 0)
+		{
+			speed = Vector2{ -TILE_SIZE, 0 };
+		}
+	}
+	else
+	{
+		if (frameCount % 20 == 0)
+		{
+			// move head to fruitPiece.x first
+			if (player[0].position.x > fruit.position.x) // move to the left
+			{
+				if (player[0].position.y + TILE_SIZE == max.y)
+				{
+					player[0].position.y -= TILE_SIZE;
+				}
+				else
+				{
+					player[0].position.y += TILE_SIZE;
+				}
+
+				player[0].position.x -= TILE_SIZE;
+			}
+			else // move to the right
+			{
+
+			}
+
+			if (player[0].position.x == fruit.position.x)
+			{
+				// go up
+				if (player[0].position.y > fruit.position.y)
+				{
+					player[0].position.y -= TILE_SIZE;
+				}
+				else
+				{
+					// go down
+					player[0].position.y += TILE_SIZE;
+				}
+			}
+		}
 	}
 
-	if (IsKeyPressed(KEY_RIGHT) && speed.x == 0)
+	// draw a line that follows the grid
+	// from head to fruit
+	if (IsKeyDown(KEY_C))
 	{
-		speed = Vector2{ TILE_SIZE, 0 };
-	}
+		Vector2 head = player[0].position;
+		Vector2 fruitPiece = fruit.position;
 
-	if (IsKeyPressed(KEY_LEFT) && speed.x == 0)
-	{
-		speed = Vector2{ -TILE_SIZE, 0 };
+		// draw the horizontal line
+		DrawLine(head.x + TILE_SIZE / 2, head.y + TILE_SIZE / 2,
+			fruitPiece.x + TILE_SIZE / 2, head.y + TILE_SIZE / 2, RED);
+
+		// then vertical line
+		DrawLine(fruitPiece.x + TILE_SIZE / 2, head.y + TILE_SIZE / 2,
+			fruitPiece.x + TILE_SIZE / 2, fruitPiece.y + TILE_SIZE / 2, RED);
 	}
 
 	// player is a vector
@@ -112,8 +177,19 @@ void Snake::Update()
 			player[i].position = player[i - 1].position;
 		}
 
-		// move the head
-		player[0].position += speed;
+		if (movementOverride == false)
+		{
+			// move the head
+			player[0].position += speed;
+		}
+
+		// check if the head collides with a border
+		if (player[0].position.x < min.x || player[0].position.y < min.y
+			|| player[0].position.x > max.x || player[0].position.y > max.y)
+		{
+			gameOver = true;
+			return;
+		}
 
 		// check if the head hits its own body
 		// i starts at 1 because head is index 0!
@@ -129,9 +205,9 @@ void Snake::Update()
 			}
 		}
 
-		if (fruitCount > 0 && (fruitCount + 1) % 10 == 0)
+		if (fruitCount > 0 && (fruitCount + 1) % 2 == 0)
 		{
-			fruit.color = RED;
+			fruit.color = SKYBLUE;
 		}
 		else
 		{
@@ -146,6 +222,12 @@ void Snake::Update()
 			tail.position = player[player.size() - 1].position;
 			player.push_back(tail);
 			SpawnFruit();
+		}
+
+		if (fruitCount > 0 && fruitCount % 2 == 0 && !gameOver)
+		{
+			movementOverride = true;
+			movementOverrideStartTime = GetTime();
 		}
 	}
 

@@ -102,4 +102,8 @@ public:
 
 	bool isPaused = false;
 	bool gameOver = false;
+	bool movementOverride = false;
+
+	// GetTime() returns a double
+	double movementOverrideStartTime = 0.0;
 };
