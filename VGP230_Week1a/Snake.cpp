@@ -81,7 +81,7 @@ void Snake::Start()
 void Snake::Update()
 {
 	frameCount++;
-	
+
 	if (movementOverride == true)
 	{
 		if (GetTime() - movementOverrideStartTime >= 10.0)
@@ -116,37 +116,26 @@ void Snake::Update()
 	{
 		if (frameCount % 20 == 0)
 		{
-			// move head to fruitPiece.x first
-			if (player[0].position.x > fruit.position.x) // move to the left
-			{
-				if (player[0].position.y + TILE_SIZE == max.y)
-				{
-					player[0].position.y -= TILE_SIZE;
-				}
-				else
-				{
-					player[0].position.y += TILE_SIZE;
-				}
+			// check where body is
+			Vector2 noTouchy = player[1].position;
 
-				player[0].position.x -= TILE_SIZE;
+			// move head to fruits x position first
+			if (player[0].position.x < fruit.position.x && player[0].position.x + TILE_SIZE != noTouchy.x)
+			{
+				speed = Vector2{ TILE_SIZE, 0 };
 			}
-			else // move to the right
+			else if (player[0].position.x > fruit.position.x && player[0].position.x - TILE_SIZE != noTouchy.x)
 			{
-
+				speed = Vector2{ -TILE_SIZE, 0 };
 			}
-
-			if (player[0].position.x == fruit.position.x)
+			// then move toward fruits y position
+			else if (player[0].position.y < fruit.position.y && player[0].position.y + TILE_SIZE != noTouchy.y)
 			{
-				// go up
-				if (player[0].position.y > fruit.position.y)
-				{
-					player[0].position.y -= TILE_SIZE;
-				}
-				else
-				{
-					// go down
-					player[0].position.y += TILE_SIZE;
-				}
+				speed = Vector2{ 0, TILE_SIZE };
+			}
+			else if (player[0].position.y > fruit.position.y && player[0].position.y - TILE_SIZE != noTouchy.y)
+			{
+				speed = Vector2{ 0, -TILE_SIZE };
 			}
 		}
 	}
@@ -172,20 +161,17 @@ void Snake::Update()
 
 	if (frameCount % 20 == 0)
 	{
+		// move tail pieces to next spot in line
 		for (int i = player.size() - 1; i > 0; i--)
 		{
 			player[i].position = player[i - 1].position;
 		}
 
-		if (movementOverride == false)
-		{
-			// move the head
-			player[0].position += speed;
-		}
+		// move the head
+		player[0].position += speed;
 
 		// check if the head collides with a border
-		if (player[0].position.x < min.x || player[0].position.y < min.y
-			|| player[0].position.x > max.x || player[0].position.y > max.y)
+		if (OutOfBounds())
 		{
 			gameOver = true;
 			return;
@@ -205,7 +191,7 @@ void Snake::Update()
 			}
 		}
 
-		if (fruitCount > 0 && (fruitCount + 1) % 2 == 0)
+		if (fruitCount > 0 && (fruitCount + 1) % 10 == 0)
 		{
 			fruit.color = SKYBLUE;
 		}
@@ -224,7 +210,7 @@ void Snake::Update()
 			SpawnFruit();
 		}
 
-		if (fruitCount > 0 && fruitCount % 2 == 0 && !gameOver)
+		if (fruitCount > 0 && fruitCount % 10 == 0 && !gameOver)
 		{
 			movementOverride = true;
 			movementOverrideStartTime = GetTime();
@@ -319,4 +305,18 @@ void Snake::Restart()
 
 	isPaused = false;
 	gameOver = false;
+	movementOverride = false;
+}
+
+bool Snake::OutOfBounds() // is there a problem here?
+{
+	if (player[0].position.x < min.x || player[0].position.y < min.y
+		|| player[0].position.x == max.x || player[0].position.y == max.y)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

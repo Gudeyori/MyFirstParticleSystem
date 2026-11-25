@@ -94,7 +94,6 @@ public:
 	void Update(); // frame by frame calculation
 
 	void SpawnFruit();
-
 	void DisplayScreenText(std::string text1, std::string text2);
 	void Pause();
 	void GameOver();
@@ -103,7 +102,8 @@ public:
 	bool isPaused = false;
 	bool gameOver = false;
 	bool movementOverride = false;
+	bool OutOfBounds();
 
-	// GetTime() returns a double
+	// GetTime() returns a double 
 	double movementOverrideStartTime = 0.0;
 };
